@@ -10,6 +10,7 @@ class Board
     @grid = blank_grid
     @cursor = [0, 0]
     seed_board if seed
+    @active_moveset = []
   end
 
   def blank_grid
@@ -44,9 +45,10 @@ class Board
     grid.each_with_index do |row, i|
       bg_idx = i % 2
       row.each_with_index do |cell, j|
-        # debugger
         if [i, j] == cursor
           print cell.to_s.colorize(background: :green)
+        elsif false # placeholder
+          print cell.to_s.colorize(background: :yellow)
         else
           bg_color = BACKGROUND_COLORS[(bg_idx + j) % 2]
           print cell.to_s.colorize(background: bg_color)
@@ -65,6 +67,10 @@ class Board
     pos.all? { |coord| coord.between?(0, 7) }
   end
 
+  def is_color?(pos, color)
+    self[*pos].color == color
+  end
+
   MOVEMENTS = {
     "w"  => [-1, 0],
     "a"  => [0, -1],
@@ -73,10 +79,12 @@ class Board
     "\r" => [ 0, 0]
   }
 
+  # Needs to account for board limits
   def update_cursor(input)
     c_row, c_col = cursor
     d_row, d_col = MOVEMENTS[input]
     @cursor = [c_row + d_row, c_col + d_col]
+    # update active moveset
     render
   end
 
@@ -88,7 +96,7 @@ class Board
     @grid[row][col] = val
   end
 
-  #ONLY FOR TESTING, MOVE TO GAME LATER
+  # ONLY FOR TESTING, MOVE TO GAME LATER
   def get_input
     render
     loop do

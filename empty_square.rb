@@ -13,4 +13,8 @@ class EmptySquare
     "empty"
   end
 
+  def color
+    nil
+  end
+
 end
