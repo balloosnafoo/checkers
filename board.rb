@@ -76,14 +76,25 @@ class Board
     self[*to_pos] = self[*from_pos]
     self[*to_pos].update_position(to_pos)
     self[*from_pos] = EmptySquare.new
-    # if distance?(from_pos, to_pos) > 1
-    #
-    # end
+    if distance?(from_pos, to_pos) > 1
+      captured_piece(from_pos, to_pos)
+    end
+    maybe_promote(to_pos)
     render
   end
 
-  def distance(from_pos, to_pos)
+  def maybe_promote(pos)
+    self[*pos].promote if pos[0] == 0 || pos[0] == 7
+  end
+
+  def distance?(from_pos, to_pos)
     (from_pos[0] - to_pos[0]).abs
+  end
+
+  def captured_piece(from_pos, to_pos)
+    cap_x = (from_pos[0] + to_pos[0]) / 2
+    cap_y = (from_pos[1] + to_pos[1]) / 2
+    self[cap_x, cap_y] = EmptySquare.new
   end
 
   MOVEMENTS = {
@@ -94,12 +105,11 @@ class Board
     "\r" => [ 0, 0]
   }
 
-  # Needs to account for board limits
   def update_cursor(input)
-    # debugger
     c_row, c_col = cursor
     d_row, d_col = MOVEMENTS[input]
-    @cursor = [c_row + d_row, c_col + d_col]
+    new_pos = [c_row + d_row, c_col + d_col]
+    @cursor = new_pos if on_board?(new_pos)
     @active_moveset = self[*cursor].moves
     render
   end
@@ -110,16 +120,6 @@ class Board
 
   def []=(row, col, val)
     @grid[row][col] = val
-  end
-
-  # ONLY FOR TESTING, MOVE TO GAME LATER
-  def get_input
-    render
-    loop do
-      input = $stdin.getch
-      exit if "p" == input
-      update_cursor(input)
-    end
   end
 
   private

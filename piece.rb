@@ -66,6 +66,10 @@ class Piece
     @pos = new_position
   end
 
+  def promote
+    @kinged = true
+  end
+
   def king?
     kinged
   end
