@@ -47,6 +47,7 @@ class HumanPlayer < Player
 end
 
 class ComputerPlayer < Player
+  # Current bug with multiple jumps
 
   def play_turn
     sleep(1)
@@ -83,7 +84,7 @@ class ComputerPlayer < Player
 
   def choose_next_jump(jumper_pos)
     sleep(1)
-    board[*jumper_pos].moves.sample
+    game.specify_cursor_position(board[*jumper_pos].jumping_moves.sample)
   end
 
 end

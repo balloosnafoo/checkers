@@ -105,7 +105,7 @@ class Checkers
   end
 
   def jump_again?
-    debugger
+    # debugger
     board[*board.cursor].jumping_moves.length >= 1
   end
 end
