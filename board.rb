@@ -47,7 +47,7 @@ class Board
       row.each_with_index do |cell, j|
         if [i, j] == cursor
           print cell.to_s.colorize(background: :green)
-        elsif false # placeholder
+        elsif @active_moveset.include?([i, j])
           print cell.to_s.colorize(background: :yellow)
         else
           bg_color = BACKGROUND_COLORS[(bg_idx + j) % 2]
@@ -84,7 +84,7 @@ class Board
     c_row, c_col = cursor
     d_row, d_col = MOVEMENTS[input]
     @cursor = [c_row + d_row, c_col + d_col]
-    # update active moveset
+    @active_moveset = self[*cursor].moves
     render
   end
 

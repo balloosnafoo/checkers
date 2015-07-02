@@ -17,4 +17,8 @@ class EmptySquare
     nil
   end
 
+  def moves
+    []
+  end
+
 end
