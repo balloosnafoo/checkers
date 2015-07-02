@@ -62,6 +62,10 @@ class Piece
     end
   end
 
+  def update_position(new_position)
+    @pos = new_position
+  end
+
   def king?
     kinged
   end

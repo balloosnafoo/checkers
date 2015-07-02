@@ -1,0 +1,3 @@
+
+class InvalidSelectionError < StandardError
+end

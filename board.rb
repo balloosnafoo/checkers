@@ -5,6 +5,7 @@ require_relative "piece"
 require_relative "empty_square"
 
 class Board
+  attr_reader :cursor
 
   def initialize(seed = false)
     @grid = blank_grid
@@ -71,6 +72,20 @@ class Board
     self[*pos].color == color
   end
 
+  def move_piece(from_pos, to_pos)
+    self[*to_pos] = self[*from_pos]
+    self[*to_pos].update_position(to_pos)
+    self[*from_pos] = EmptySquare.new
+    # if distance?(from_pos, to_pos) > 1
+    #
+    # end
+    render
+  end
+
+  def distance(from_pos, to_pos)
+    (from_pos[0] - to_pos[0]).abs
+  end
+
   MOVEMENTS = {
     "w"  => [-1, 0],
     "a"  => [0, -1],
@@ -81,6 +96,7 @@ class Board
 
   # Needs to account for board limits
   def update_cursor(input)
+    # debugger
     c_row, c_col = cursor
     d_row, d_col = MOVEMENTS[input]
     @cursor = [c_row + d_row, c_col + d_col]
@@ -107,7 +123,7 @@ class Board
   end
 
   private
-  attr_reader :grid, :cursor
+  attr_reader :grid
 
 end
 
