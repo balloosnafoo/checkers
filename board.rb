@@ -56,6 +56,15 @@ class Board
     end
   end
 
+  def empty_square?(pos)
+    row, col = pos
+    self[row, col].empty?
+  end
+
+  def on_board?(pos)
+    pos.all? { |coord| coord.between?(0, 7) }
+  end
+
   MOVEMENTS = {
     "w"  => [-1, 0],
     "a"  => [0, -1],
