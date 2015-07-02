@@ -19,8 +19,10 @@ class Piece
 
   def jumping_moves
     JUMPING_VECTORS.each_with_object([]) do |vector, arr|
-      jump_for_vector(vector,  direction, arr, pos)
-      jump_for_vector(vector, -direction, arr, pos) if kinged
+      jump_for_vector(vector,  direction, arr)
+      if kinged
+        jump_for_vector(vector, -direction, arr)
+      end
     end
   end
 
@@ -60,10 +62,10 @@ class Piece
   private
   attr_reader :kinged, :pos, :direction, :board
 
-  def jump_for_vector(vector, dir_switch, arr, pos)
+  def jump_for_vector(vector, dir_switch, arr)
     x, y = pos
     dx, dy = vector.map{ |v| v * dir_switch }
-    cap_x, cap_y = vector.map{ |v| v * direction  / 2 }
+    cap_x, cap_y = vector.map{ |v| v * dir_switch / 2 }
     to_pos = [x + dx, y + dy]
     cap_pos = [x + cap_x, y + cap_y]
     if board.on_board?(to_pos) && board.empty_square?(to_pos)
