@@ -18,11 +18,15 @@ class Piece
     kinged
   end
 
+  def to_s
+    (kinged ? " \u2622 " : " \u263B ").colorize(color)
+  end
+
   def inspect
     "#{color} #{pos}"
   end
 
   private
-  attr_reader :kinged
+  attr_reader :kinged, :pos
 
 end

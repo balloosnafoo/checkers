@@ -6,13 +6,35 @@ require_relative "empty_square"
 
 class Board
 
-  def initialize
+  def initialize(seed = false)
     @grid = blank_grid
     @cursor = [0, 0]
+    seed_board if seed
   end
 
   def blank_grid
     Array.new(8){ Array.new(8) { EmptySquare.new } }
+  end
+
+  SEED_RANGES = {
+    :red => (5..7),
+    :black => (0..2)
+  }
+
+  def seed_board
+    seed_color(:red)
+    seed_color(:black)
+  end
+
+  def seed_color(color)
+    SEED_RANGES[color].each do |i|
+      piece_switch = i % 2
+      (0..7).each do |j|
+        if (piece_switch + j) % 2 == 0
+          self[i, j] = Piece.new(color, self, [i,j])
+        end
+      end
+    end
   end
 
   BACKGROUND_COLORS = [:white, :light_black]
@@ -49,8 +71,17 @@ class Board
     render
   end
 
+  def [](row, col)
+    grid[row][col]
+  end
+
+  def []=(row, col, val)
+    @grid[row][col] = val
+  end
+
   #ONLY FOR TESTING, MOVE TO GAME LATER
   def get_input
+    render
     loop do
       input = $stdin.getch
       exit if "p" == input
@@ -59,7 +90,11 @@ class Board
   end
 
   private
-  attr_reader :grid
-  attr_accessor :cursor
+  attr_reader :grid, :cursor
 
+end
+
+if __FILE__ == $PROGRAM_NAME
+  b = Board.new(true)
+  b.get_input
 end
