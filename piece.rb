@@ -2,7 +2,7 @@
 class Piece
   attr_reader :color
 
-  def initialize(color, pos)
+  def initialize(color, board, pos)
     @color  = color
     @pos    = pos
     @kinged = kinged
@@ -16,6 +16,10 @@ class Piece
 
   def king?
     kinged
+  end
+
+  def inspect
+    "#{color} #{pos}"
   end
 
   private

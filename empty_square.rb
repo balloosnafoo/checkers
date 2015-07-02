@@ -5,4 +5,12 @@ class EmptySquare
     true
   end
 
+  def to_s
+    "   "
+  end
+
+  def inspect
+    "empty"
+  end
+
 end
