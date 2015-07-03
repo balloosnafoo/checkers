@@ -4,7 +4,6 @@ require_relative "player"
 require_relative "errors"
 
 class Checkers
-
   def initialize(player1, player2)
     @board = Board.new(seed = true)
     @players = [player1, player2]
@@ -16,15 +15,22 @@ class Checkers
     print_instructions
     board.render
     until winner
-      play_turn(players.first)
-      players.rotate!
       puts "It's now #{players.first.color}'s turn"
+      jumped = play_turn(players.first)
+      while jump_again? && jumped
+        from_pos = board.cursor
+        players.first.choose_next_jump(from_pos)
+        board.move_piece(from_pos, board.cursor)
+      end
+      @winner = players.first unless board.has_pieces?(players[1].color)
+      players.rotate!
     end
     congratulate_winner
   end
 
   def play_turn(player)
     begin
+      puts "#{player.color.to_s.capitalize}'s turn'"
       player.get_input
       from_pos = board.cursor
       player.get_input
@@ -47,13 +53,28 @@ class Checkers
   end
 
   def check_input(from_pos, to_pos)
-    # debugger
     player = players.first
     error = false                               # Fix later
     error = true if  board[*from_pos].color != player.color
     error = true if  board[*to_pos].color   == player.color
     error = true if !board[*from_pos].moves.include?(to_pos)
     raise InvalidSelectionError if error
+  end
+
+  def jumping_pieces(color)
+    board.get_pieces(color).select do |piece|
+      piece.jumping_moves.length > 0
+    end
+  end
+
+  def can_jump?(color)
+    board.get_pieces(color).any? do |piece|
+      piece.jumping_moves.length > 0
+    end
+  end
+
+  def is_continuation?(jumper_pos)
+    board[*jumper_pos].jumping_moves.include?(board.cursor)
   end
 
   def print_instructions
@@ -65,12 +86,15 @@ class Checkers
   end
 
   def congratulate_winner
-    puts "Congratulations #{winner.name}! You win."
+    puts "Congratulations #{winner.color}! You win."
   end
 
   private
   attr_reader :winner, :players, :board
 
+  def jump_again?
+    board[*board.cursor].jumping_moves.length >= 1
+  end
 end
 
 if __FILE__ == $PROGRAM_NAME

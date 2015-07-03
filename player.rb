@@ -1,4 +1,5 @@
 require 'io/console'
+require 'byebug'
 
 class Player
   attr_accessor :color, :game
@@ -17,6 +18,16 @@ class Player
       input = $stdin.getch
     end
     input
+  end
+
+  def choose_next_jump(jumper_pos)
+    begin
+      get_input
+      raise InvalidSelectionError unless game.is_continuation?(jumper_pos)
+    rescue InvalidSelectionError
+      puts "You must continue your jump!"
+      retry
+    end
   end
 
 end
