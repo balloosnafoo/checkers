@@ -40,6 +40,9 @@ class Checkers
     rescue InvalidSelectionError
       puts "I can't let you do that."
       retry
+    rescue MustJumpError
+      puts "You must jump!"
+      retry
     end
   end
 
@@ -55,10 +58,11 @@ class Checkers
   def check_input(from_pos, to_pos)
     player = players.first
     error = false                               # Fix later
-    error = true if  board[*from_pos].color != player.color
-    error = true if  board[*to_pos].color   == player.color
-    error = true if !board[*from_pos].moves.include?(to_pos)
-    raise InvalidSelectionError if error
+    raise InvalidSelectionError if (board[*from_pos].color != player.color ||
+      board[*to_pos].color == player.color ||
+      !board[*from_pos].moves.include?(to_pos))
+    raise MustJumpError if (board.distance(from_pos, to_pos) < 2 &&
+      can_jump?(players.first.color))
   end
 
   def jumping_pieces(color)
