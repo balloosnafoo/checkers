@@ -110,12 +110,13 @@ class Board
     self[cap_x, cap_y] = EmptySquare.new
   end
 
-  def update_cursor(input)
+  def update_cursor(input, color)
     c_row, c_col = cursor
     d_row, d_col = MOVEMENTS[input]
     new_pos = [c_row + d_row, c_col + d_col]
     @cursor = new_pos if on_board?(new_pos)
-    @active_moveset = self[*cursor].moves
+    @active_moveset = self[*cursor].moves if (is_color?(cursor, color) ||
+      self[*cursor].empty?)
     render
   end
 

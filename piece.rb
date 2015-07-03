@@ -72,11 +72,6 @@ class Piece
       (!board.is_color?(cap_pos, color) && !board.empty_square?(cap_pos))
         arr << to_pos
     end
-    # if board.on_board?(to_pos) && board.empty_square?(to_pos)
-    #   if !board.is_color?(cap_pos, color) && !board.empty_square?(cap_pos)
-    #     arr << to_pos
-    #   end
-    # end
   end
 
   def slide_for_vector(vector, dir_switch, arr)

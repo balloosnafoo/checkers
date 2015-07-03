@@ -31,10 +31,7 @@ class Checkers
   def play_turn(player)
     begin
       puts "#{player.color.to_s.capitalize}'s turn'"
-      player.get_input
-      from_pos = board.cursor
-      player.get_input
-      to_pos   = board.cursor
+      from_pos, to_pos = player.play_turn
       check_input(from_pos, to_pos)
       board.move_piece(from_pos, to_pos)
     rescue InvalidSelectionError
@@ -52,12 +49,15 @@ class Checkers
   end
 
   def move_cursor(input)
-    board.update_cursor(input)
+    board.update_cursor(input, players.first.color)
+  end
+
+  def current_selection
+    board.cursor
   end
 
   def check_input(from_pos, to_pos)
     player = players.first
-    error = false                               # Fix later
     raise InvalidSelectionError if (board[*from_pos].color != player.color ||
       board[*to_pos].color == player.color ||
       !board[*from_pos].moves.include?(to_pos))
@@ -102,6 +102,6 @@ class Checkers
 end
 
 if __FILE__ == $PROGRAM_NAME
-  c = Checkers.new(Player.new, Player.new)
+  c = Checkers.new(HumanPlayer.new, HumanPlayer.new)
   c.play
 end

@@ -8,6 +8,9 @@ class Player
     @game = game
     @color = color
   end
+end
+
+class HumanPlayer < Player
 
   def get_input
     input = $stdin.getch
@@ -29,5 +32,18 @@ class Player
       retry
     end
   end
+
+  def play_turn
+    get_input
+    from_pos = game.current_selection
+    get_input
+    to_pos   = game.current_selection
+    [from_pos, to_pos]
+  end
+end
+
+class ComputerPlayer < Player
+
+
 
 end
