@@ -11,6 +11,11 @@ class Checkers
     @winner = nil
   end
 
+  def establish_connection
+    players[0].receive_game_info(self, board, :black)
+    players[1].receive_game_info(self, board, :red)
+  end
+
   def play
     print_instructions
     board.render
@@ -31,6 +36,7 @@ class Checkers
   def play_turn(player)
     begin
       puts "#{player.color.to_s.capitalize}'s turn'"
+      # debugger
       from_pos, to_pos = player.play_turn
       check_input(from_pos, to_pos)
       board.move_piece(from_pos, to_pos)
@@ -43,13 +49,13 @@ class Checkers
     end
   end
 
-  def establish_connection
-    players[0].receive_game_info(self, :black)
-    players[1].receive_game_info(self, :red)
-  end
-
   def move_cursor(input)
     board.update_cursor(input, players.first.color)
+  end
+
+  def specify_cursor_position(pos)
+    board.cursor = pos
+    board.render
   end
 
   def current_selection
@@ -65,22 +71,7 @@ class Checkers
       can_jump?(players.first.color))
   end
 
-  def jumping_pieces(color)
-    board.get_pieces(color).select do |piece|
-      piece.jumping_moves.length > 0
-    end
-  end
-
-  def can_jump?(color)
-    board.get_pieces(color).any? do |piece|
-      piece.jumping_moves.length > 0
-    end
-  end
-
-  def is_continuation?(jumper_pos)
-    board[*jumper_pos].jumping_moves.include?(board.cursor)
-  end
-
+  # printing related methods
   def print_instructions
     string =  "Welcome to the checkers game, you can move your cursor with\n"
     string += "WASD, and select the piece that you would like to move with\n"
@@ -93,15 +84,33 @@ class Checkers
     puts "Congratulations #{winner.color}! You win."
   end
 
+  def is_continuation?(jumper_pos)
+    board[*jumper_pos].jumping_moves.include?(board.cursor)
+  end
+
   private
   attr_reader :winner, :players, :board
 
+  # Jumping related methods
+  def jumping_pieces(color)
+    board.get_pieces(color).select do |piece|
+      piece.jumping_moves.length > 0
+    end
+  end
+
+  def can_jump?(color)
+    board.get_pieces(color).any? do |piece|
+      piece.jumping_moves.length > 0
+    end
+  end
+
   def jump_again?
+    debugger
     board[*board.cursor].jumping_moves.length >= 1
   end
 end
 
 if __FILE__ == $PROGRAM_NAME
-  c = Checkers.new(HumanPlayer.new, HumanPlayer.new)
+  c = Checkers.new(HumanPlayer.new, ComputerPlayer.new)
   c.play
 end

@@ -5,7 +5,7 @@ class Piece
   SLIDING_VECTORS = [[1, 1], [1, -1]]
 
   attr_accessor :pos
-  attr_reader :color
+  attr_reader :color, :pos
 
   def initialize(color, board, pos, kinged = false)
     @color  = color
@@ -60,7 +60,7 @@ class Piece
   end
 
   private
-  attr_reader :kinged, :pos, :direction, :board
+  attr_reader :kinged, :direction, :board
 
   def jump_for_vector(vector, dir_switch, arr)
     x, y = pos

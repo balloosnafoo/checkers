@@ -24,7 +24,7 @@ class Board
     Array.new(8){ Array.new(8) { EmptySquare.new } }
   end
 
-  attr_reader :cursor
+  attr_accessor :cursor
 
   def initialize(seed = false)
     @grid = self.class.blank_grid
