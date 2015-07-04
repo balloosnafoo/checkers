@@ -25,7 +25,7 @@ class Checkers
       while jump_again? && jumped
         from_pos = board.cursor
         players.first.choose_next_jump(from_pos)
-        board.move_piece(from_pos, board.cursor)
+        board.move_piece!(from_pos, board.cursor)
       end
       @winner = players.first unless board.has_pieces?(players[1].color)
       players.rotate!
@@ -38,7 +38,7 @@ class Checkers
       puts "#{player.color.to_s.capitalize}'s turn'"
       from_pos, to_pos = player.play_turn
       check_input(from_pos, to_pos)
-      board.move_piece(from_pos, to_pos)
+      board.move_piece!(from_pos, to_pos)
     rescue InvalidSelectionError
       puts "I can't let you do that."
       retry

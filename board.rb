@@ -8,11 +8,11 @@ class Board
   BACKGROUND_COLORS = [:white, :light_black]
 
   MOVEMENTS = {
-    "w"  => [-1, 0],
-    "a"  => [0, -1],
-    "s"  => [ 1, 0],
-    "d"  => [ 0, 1],
-    "\r" => [ 0, 0]
+    "w"  => [-1,  0],
+    "a"  => [ 0, -1],
+    "s"  => [ 1,  0],
+    "d"  => [ 0,  1],
+    "\r" => [ 0,  0]
   }
 
   SEED_RANGES = {
@@ -81,7 +81,7 @@ class Board
     self[*pos].color == color
   end
 
-  def move_piece(from_pos, to_pos)
+  def move_piece!(from_pos, to_pos, render_move = true)
     self[*to_pos] = self[*from_pos]
     self[*to_pos].pos = to_pos
     self[*from_pos] = EmptySquare.new
@@ -90,7 +90,7 @@ class Board
       jumped = true
     end
     maybe_promote(to_pos)
-    render
+    render if render_move
     jumped ? true : false
   end
 
@@ -134,7 +134,7 @@ class Board
     db = Board.new
     grid.each_with_index do |row, i|
       row.each_with_index do |cell, j|
-        db[i, j] = cell.dup 
+        db[i, j] = cell.dup(db) 
       end
     end
     db

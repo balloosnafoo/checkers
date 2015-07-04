@@ -10,6 +10,10 @@ class Player
     @board = board
   end
 
+  def other_color
+    color == :red ? :black : :red
+  end
+
   private
   attr_reader :board
 end
@@ -51,7 +55,9 @@ class ComputerPlayer < Player
 
   def play_turn
     sleep(1)
-    jumping_move || random_move
+    move = jumping_move || random_move
+    expected_loss(*move)
+    move
   end
 
   def jumping_move
@@ -86,5 +92,35 @@ class ComputerPlayer < Player
     sleep(1)
     game.specify_cursor_position(board[*jumper_pos].jumping_moves.sample)
   end
+
+  def expected_loss(from_pos, to_pos)
+    dup_board = board.deep_dup
+    dup_board.move_piece!(from_pos, to_pos)
+
+    moving_piece = dup_board[*to_pos]
+    moving_color = moving_piece.color
+    opp_color    = moving_piece.other_color
+    opp_pieces   = dup_board.get_pieces(moving_piece.other_color)
+
+    return 0 if opp_pieces.all? { |piece| piece.jumping_moves.empty? }
+    longest = 0
+    opp_pieces.each do |piece|
+      best_move_length = longest_jump(piece.pos, dup_board, opp_color)
+      longest = best_move_length if best_move_length > longest
+    end
+    puts "I found an expected loss of #{longest}"
+    longest
+  end
+
+  def longest_jump(pos, board, color)
+    return 0 if board[*pos].jumping_moves.empty?
+    
+    board[*pos].jumping_moves.each do |move|
+      dup_board = board.deep_dup
+      dup_board.move_piece!(pos, move, false)
+      return 1 + longest_jump(move, dup_board, color)
+    end
+  end
+
 
 end

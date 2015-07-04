@@ -5,7 +5,7 @@ class Piece
   SLIDING_VECTORS = [[1, 1], [1, -1]]
 
   attr_accessor :pos
-  attr_reader :color, :pos
+  attr_reader :color
 
   def initialize(color, board, pos, kinged = false)
     @color  = color
@@ -35,8 +35,8 @@ class Piece
     end
   end
 
-  def dup
-    Piece.new(color, board, pos, kinged)
+  def dup(dup_board)
+    Piece.new(color, dup_board, pos, kinged)
   end
 
   def update_position(new_position)
@@ -53,6 +53,10 @@ class Piece
 
   def empty?
     false
+  end
+
+  def other_color
+    color == :red ? :black : :red
   end
 
   def to_s

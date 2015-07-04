@@ -21,4 +21,8 @@ class EmptySquare
     []
   end
 
+  def dup(dup_board)
+    EmptySquare.new
+  end
+
 end
