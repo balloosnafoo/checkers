@@ -55,9 +55,7 @@ class ComputerPlayer < Player
 
   def play_turn
     sleep(1)
-    move = jumping_move || random_move
-    expected_loss(*move)
-    move
+    jumping_move || least_cost_move
   end
 
   def jumping_move
@@ -78,6 +76,45 @@ class ComputerPlayer < Player
     end
   end
 
+  def least_cost_move
+    pieces = board.get_pieces(color)
+    lcm_jump,  jump_cost  = least_cost_moves(pieces, :jumping_moves)
+    lcm_slide, slide_cost = least_cost_moves(pieces, :sliding_moves)
+    case jump_cost <=> slide_cost
+    when 1
+      move = lcm_slide.sample
+    when 0
+      move = (lcm_slide + lcm_jump).sample
+    when -1
+      move = lcm_jump.sample
+    end
+    puts "I'm executing this move:"
+    p move
+    move
+  end
+
+  def least_cost_moves(pieces, move_type)
+    # debugger
+    lowest_cost = 99
+    lowest_cost_moves = []
+    offset = move_type == :jumping_moves ? 1 : 0
+
+    pieces.each do |piece|
+      piece.send(move_type).each do |jump|
+        cost = expected_loss(piece.pos, jump) - offset
+        if cost < lowest_cost
+          lowest_cost = cost
+          lowest_cost_moves = [[piece.pos, jump]]
+        elsif cost == lowest_cost
+          lowest_cost_moves << [piece.pos, jump]
+        end
+      end
+    end
+    puts "I found the following #{move_type} at cost #{lowest_cost}"
+    p lowest_cost_moves
+    [lowest_cost_moves, lowest_cost]
+  end
+
   def random_move
     rm = board.get_pieces(color).each_with_object({}) do |piece, hash|
       r_moves = piece.moves
@@ -95,7 +132,7 @@ class ComputerPlayer < Player
 
   def expected_loss(from_pos, to_pos)
     dup_board = board.deep_dup
-    dup_board.move_piece!(from_pos, to_pos)
+    dup_board.move_piece!(from_pos, to_pos, false)
 
     moving_piece = dup_board[*to_pos]
     moving_color = moving_piece.color
