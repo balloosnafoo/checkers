@@ -47,7 +47,6 @@ class HumanPlayer < Player
 end
 
 class ComputerPlayer < Player
-  # Current bug with multiple jumps
 
   def play_turn
     sleep(1)

@@ -35,6 +35,10 @@ class Piece
     end
   end
 
+  def dup
+    Piece.new(color, board, pos, kinged)
+  end
+
   def update_position(new_position)
     @pos = new_position
   end

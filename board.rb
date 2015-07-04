@@ -42,9 +42,7 @@ class Board
     SEED_RANGES[color].each do |i|
       piece_switch = i % 2
       (0..7).each do |j|
-        if (piece_switch + j).even?
-          self[i, j] = Piece.new(color, self, [i, j])
-        end
+        self[i, j] = Piece.new(color, self, [i, j]) if (piece_switch + j).even?
       end
     end
   end
@@ -132,6 +130,16 @@ class Board
     grid.flatten.select { |piece| piece.color == color }
   end
 
+  def deep_dup
+    db = Board.new
+    grid.each_with_index do |row, i|
+      row.each_with_index do |cell, j|
+        db[i, j] = cell.dup 
+      end
+    end
+    db
+  end
+
   def [](row, col)
     grid[row][col]
   end
@@ -142,9 +150,4 @@ class Board
 
   private
   attr_reader :grid
-end
-
-if __FILE__ == $PROGRAM_NAME
-  b = Board.new(true)
-  b.get_input
 end
