@@ -115,9 +115,17 @@ class Board
     d_row, d_col = MOVEMENTS[input]
     new_pos = [c_row + d_row, c_col + d_col]
     @cursor = new_pos if on_board?(new_pos)
-    @active_moveset = self[*cursor].moves if (is_color?(cursor, color) ||
-      self[*cursor].empty?)
+    @active_moveset = valid_moves(color)
     render
+  end
+
+  def valid_moves(color)
+    return [] if self[*cursor].empty? || self[*cursor].color != color
+    if get_pieces(color).any? { |piece| piece.jumping_moves.length > 0 }
+      self[*cursor].jumping_moves
+    else
+      self[*cursor].moves
+    end
   end
 
   def get_pieces(color)
