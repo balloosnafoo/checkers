@@ -30,8 +30,8 @@ class HumanPlayer < Player
   def choose_next_jump(jumper_pos)
     begin
       get_input
-      raise InvalidSelectionError unless game.is_continuation?(jumper_pos)
-    rescue InvalidSelectionError
+      raise MustJumpError unless game.is_continuation?(jumper_pos)
+    rescue MustJumpError
       puts "You must continue your jump!"
       retry
     end
@@ -40,6 +40,7 @@ class HumanPlayer < Player
   def play_turn
     get_input
     from_pos = game.current_selection
+    raise InvalidSelectionError if board[*from_pos].color != color
     get_input
     to_pos   = game.current_selection
     [from_pos, to_pos]

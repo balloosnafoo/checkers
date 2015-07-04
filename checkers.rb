@@ -36,7 +36,6 @@ class Checkers
   def play_turn(player)
     begin
       puts "#{player.color.to_s.capitalize}'s turn'"
-      # debugger
       from_pos, to_pos = player.play_turn
       check_input(from_pos, to_pos)
       board.move_piece(from_pos, to_pos)
